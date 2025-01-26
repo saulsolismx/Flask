@@ -28,9 +28,14 @@ def process():
 
     return '<h1> Hello {}, You are from {}. And you have submitted the form successfully!'.format(name, location)
 
-@app.route('/processjson', methods=['POST'])
+@app.route('/processjson', methods=['POST']) # Esto lo puedes hacer validar en postman
 def processjson():
-
+# Asi lo mandas en POSTMAN    
+# {
+#    "name" : "Saul",
+#    "location" : "Mexico",
+#    "randomlist" : ["one","two","three","four"]
+# }
     data = request.get_json()
     name = data['name']
     location = data['location']
