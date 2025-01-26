@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ def home(name):
 def query():
     name = request.args.get('name')
     location = request.args.get('location')
-    return '<h1> Hi {}. You are from {}. And you are in the query page </h1>'.format(name, location)
+    return '<h1> Hi {}. You are from {}. And you are in the query page </h1>'.format(name, location) # http://127.0.0.1:5000/query?name=Saul&location=Florida
 
 @app.route('/theform')
 def theform():
@@ -28,7 +28,15 @@ def process():
 
     return '<h1> Hello {}, You are from {}. And you have submitted the form successfully!'.format(name, location)
 
+@app.route('/processjson', methods=['POST'])
+def processjson():
 
+    data = request.get_json()
+    name = data['name']
+    location = data['location']
+    randomlist = data['randomlist']
+
+    return jsonify({'result' : 'Success', 'name' : name, 'location': location, "randomkeyinlist" : randomlist[1] })
 
 
 if __name__ == '__main__':
