@@ -43,6 +43,20 @@ def processjson():
 
     return jsonify({'result' : 'Success', 'name' : name, 'location': location, "randomkeyinlist" : randomlist[1] })
 
+@app.route('/theNewform', methods=['POST','GET'])
+def theNewform():
+    if request.method == 'GET':
+        return '''<form method="POST" action="/theNewform">
+                    <input type="text" name="name">
+                    <input type="text" name="location">
+                    <input type="submit" value="submit">
+                </form> '''
+    else:
+        name = request.form['name']
+        location = request.form['location']
+        return '<h1> Hello {}, You are from {}. And you have submitted the form successfully!'.format(name, location)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
