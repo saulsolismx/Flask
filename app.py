@@ -1,25 +1,37 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, url_for, redirect, session, render_template
 
 app = Flask(__name__)
+
+# Puedes anadir configuraciones a tu app de Flask asi:
+
+app.config['DEBUG'] = True
+
+#Para trabajar con sesiones usamos lo siguiente:
+
+app.config['SECRET_KEY'] = 'ThisIsASecret!'
+
+
+@app.route('/')
+def index():
+    name = session['name']
+    return '<h1> Hello World, this is Index and this is the session {} </h1>'.format(name)
+
 
 @app.route('/home', defaults={'name' : 'Default'})
 @app.route('/home/<name>', methods=['POST', 'GET'])
 def home(name):
-    return '<h1> Hello {}! </h1>'.format(name)
+    session['name'] = name
+    return render_template('home.html', name = name) # Asi se hace render de un html template con variable
 
 @app.route('/query')
 def query():
-    name = request.args.get('name')
+    name = request.args.get('name')   
     location = request.args.get('location')
     return '<h1> Hi {}. You are from {}. And you are in the query page </h1>'.format(name, location) # http://127.0.0.1:5000/query?name=Saul&location=Florida
 
 @app.route('/theform')
 def theform():
-    return '''<form method="POST" action="/process">
-                <input type="text" name="name">
-                <input type="text" name="location">
-                <input type="submit" value="submit">
-              </form> '''
+    return render_template('form.html')
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -56,6 +68,19 @@ def theNewform():
         location = request.form['location']
         return '<h1> Hello {}, You are from {}. And you have submitted the form successfully!'.format(name, location)
 
+
+@app.route('/redireccionar', methods=['POST','GET'])
+def redireccionar():
+    if request.method == "GET":
+        return '''
+                <form method="POST" action="/redireccionar">
+                <input type="text" name="name">
+                <input type="submit" value="Redirect">
+                </form>
+               '''
+    else:
+        name = request.form['name']
+        return redirect(url_for('home', name = name))
 
 
 if __name__ == '__main__':
